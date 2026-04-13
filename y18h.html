@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YEHENEW | ELITE PROFILE</title>
+    <style>
+        /* HIGH-END GRAPHICS CSS */
+        body {
+            margin: 0;
+            background: #020205;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Moving Star Background */
+        #bg {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: -1;
+        }
+
+        /* The 3D Card */
+        .card-container {
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 350px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(15px); /* Glassmorphism effect */
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Animated Neon Border */
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(45deg, #00f2ff, #7000ff, #00f2ff);
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.5;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Image Styling */
+        .photo-box {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #00f2ff;
+            box-shadow: 0 0 20px #00f2ff;
+            transform: translateZ(50px); /* Pops out in 3D */
+            background: #111;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            color: white;
+            letter-spacing: 5px;
+            margin: 20px 0 5px 0;
+            text-shadow: 0 0 10px #00f2ff;
+            transform: translateZ(30px);
+                  font-size: 36px;
+        }
+
+        .sub-text {
+            color: #00f2ff;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+            transform: translateZ(20px);
+        }
+
+        /* Stats Bar */
+        .stats {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            transform: translateZ(25px);
+        }
+
+        .stat {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-val {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            color: #00f2ff;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg"></canvas>
+
+    <div class="card-container">
+        <div class="card" id="card">
+            <div class="photo-box">
+                <!-- FALLBACK: If me.jpg doesn't exist, it shows a blue glow -->
+                <img src="me.jpg" onerror="this.style.display='none'; this.parentElement.style.background='radial-gradient(#00f2ff, #000)'">
+            </div>
+            <h1>YEHENEW</h1>
+            <div class="sub-text">Legendary Commander</div>
+
+            <div class="stats">
+                <div class="stat"><span class="stat-val">999</span><span class="stat-label">POWER</span></div>
+                <div class="stat"><span class="stat-val">MAX</span><span class="stat-label">SKILL</span></div>
+                <div class="stat"><span class="stat-val">A+</span><span class="stat-label">RANK</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. MOUSE 3D EFFECT ---
+        const card = document.getElementById('card');
+        document.addEventListener('mousemove', (e) => {
+            let xAxis = (window.innerWidth / 2 - e.pageX) / 15;
+            let yAxis = (window.innerHeight / 2 - e.pageY) / 15;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+        });
+
+        // --- 2. ANIMATED SPACE BACKGROUND ---
+        const canvas = document.getElementById('bg');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#020205';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+                s.y += s.speed;
+                if (s.y > canvas.height) s.y = 0;
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        draw();
+    </script>
+</body>
+</html>
+    
